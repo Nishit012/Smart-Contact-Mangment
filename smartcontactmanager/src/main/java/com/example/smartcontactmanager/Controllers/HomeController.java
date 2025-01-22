@@ -5,15 +5,18 @@ import com.example.smartcontactmanager.Helper.Message;
 import com.example.smartcontactmanager.Repositories.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+//@RequestMapping("/")
 public class HomeController {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -35,8 +38,8 @@ public class HomeController {
         return "signup";
     }
 
-    @RequestMapping("/login")
-    public String Login() {
+    @GetMapping("/login")
+    public String customLogin() {
         return "login";
     }
 
@@ -51,7 +54,9 @@ public class HomeController {
             }
             user.setRole("ROLE_USER");
             user.setEnabled(true);
-            user.setImageUrl("default.png");
+
+            user.setImageUrl("/img/default.png");
+            user.setPassword(passwordEncoder.encode(user.getPassword()));  // encoding password before saving in database.
            this.userRepository.save(user);
             model.addAttribute("user", new User());
             session.setAttribute("message", new Message("Successfully registered!!", "alert-success"));

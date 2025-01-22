@@ -1,6 +1,8 @@
 package com.example.smartcontactmanager.Entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    @NotBlank(message = "User name is required")
+    @Size(min = 1, max =12, message="Username between 1 and 12 characters")
+    @Column(unique = true)
     private String name;
 
     public String getRole() {
